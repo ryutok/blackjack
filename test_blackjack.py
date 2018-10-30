@@ -103,23 +103,23 @@ class TestBlackjack:
     def test_first_draw(self):
         play = Blackjack('You')
         play.first_draw()
-        assert 1 <= max(play._player.get_point()) <= 21
-        assert 1 <= max(play._dealer.get_point()) <= 21
+        assert 1 <= max(play.player.get_point()) <= 21
+        assert 1 <= max(play.dealer.get_point()) <= 21
 
     def test_state(self):
         play = Blackjack('You')
-        assert play.player_stat is None
-        play._player.draw_card(0)
-        play._player.draw_card(10)
-        play._check_points()
-        assert play.player_stat == 'blackjack'
-        play._player.draw_card(11)
-        play._player.draw_card(12)
-        play._check_points()
-        assert play.player_stat == 'bust'
+        assert play.player.stat is None
+        play.player.draw_card(0)
+        play.player.draw_card(10)
+        play._check_points(play.player)
+        assert play.player.stat == 'blackjack'
+        play.player.draw_card(11)
+        play.player.draw_card(12)
+        play._check_points(play.player)
+        assert play.player.stat == 'bust'
 
     def test_dealer_draw(self):
         play = Blackjack('You')
         play.first_draw()
         play.dealer_draw()
-        assert max(play._dealer.get_point()) >= 17
+        assert max(play.dealer.get_point()) >= 17

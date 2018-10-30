@@ -75,6 +75,7 @@ class Player:
         self._hold_ids = []
         self.hold_cards = []
         self._point = [0, 0]
+        self.stat = None
 
     def draw_card(self, id):
         self._hold_ids.append(id)
@@ -98,40 +99,27 @@ class Player:
 class Blackjack:
     def __init__(self, player_name):
         self.deck = Deck(1)
-        self._player = Player(player_name)
-        self._dealer = Player('Dealer')
-        self._initialize()
-
-    def _initialize(self):
-        self.player_stat = None
-        self.dealer_stat = None
+        self.player = Player(player_name)
+        self.dealer = Player('Dealer')
         self.num_win = 0
         self.num_loose = 0
         self.num_draw = 0
 
     def _refresh(self):
         self.deck.refresh()
-        self._dealer.refresh()
-        self._player.refresh()
-        self.player_stat = None
-        self.dealer_stat = None
+        self.dealer.refresh()
+        self.player.refresh()
 
     def _draw(self, player, num_card):
         for i in range(num_card):
             player.draw_card(self.deck.get_id())
 
-    def _check_points(self):
-        player_points = self._player.get_point()
+    def _check_points(self, player):
+        player_points = player.get_point()
         if min(player_points) > 21:
-            self.player_stat = 'bust'
+            player.stat = 'bust'
         elif 21 in player_points:
-            self.player_stat = 'blackjack'
-        dealer_points = self._dealer.get_point()
-
-        if min(dealer_points) > 21:
-            self.dealer_stat = 'bust'
-        elif 21 in dealer_points:
-            self.dealer_stat = 'blackjack'
+            player.stat = 'blackjack'
 
     def _show_hold_cards(self, player, card_open):
         if card_open:
@@ -150,15 +138,13 @@ class Blackjack:
             points_list = [str(x) for x in player.get_point()]
             points = ' or '.join(points_list)
             print(' '*9 + '<{} points>'.format(points))
+            if player.stat == 'blackjack':
+                print(' '*9 + '--> Blackjack!')
+            elif player.stat == 'bust':
+                print(' '*9 + '--> Bust!')
         else:
             cards = '[{:^10}] [{:^10}]'.format(player.hold_cards[0], '')
             print('{:>7}: {}'.format(player.name, cards))
-
-    def _show_player_stat(self):
-        if self.player_stat == 'blackjack':
-            print(' '*9 + '--> Blackjack!')
-        elif self.player_stat == 'bust':
-            print(' '*9 + '--> Bust!')
 
     def _player_win(self, first):
         if type(first) != bool:
@@ -177,42 +163,37 @@ class Blackjack:
 
     def first_draw(self):
         self._refresh()
-        self._draw(self._dealer, 2)
-        self._draw(self._player, 2)
+        self._draw(self.dealer, 2)
+        self._draw(self.player, 2)
 
-        self._check_points()
-        self._show_hold_cards(self._dealer, False)
-        self._show_hold_cards(self._player, True)
-        self._show_player_stat()
+        self._check_points(self.dealer)
+        self._check_points(self.player)
+        self._show_hold_cards(self.dealer, False)
+        self._show_hold_cards(self.player, True)
         print()
 
     def dealer_draw(self):
-        points = self._dealer.get_point()
+        points = self.dealer.get_point()
         while max(points) < 17:
-            self._draw(self._dealer, 1)
-            points = self._dealer.get_point()
-        self._check_points()
+            self._draw(self.dealer, 1)
+            points = self.dealer.get_point()
 
     def hit(self):
-        self._draw(self._player, 1)
-        self._show_hold_cards(self._player, True)
-        self._check_points()
-        self._show_player_stat()
+        self._draw(self.player, 1)
+        self._check_points(self.player)
+        self._show_hold_cards(self.player, True)
         print()
 
     def show_results(self):
-        self._show_hold_cards(self._dealer, True)
-        if self.dealer_stat == 'blackjack':
-            print(' '*9 + '--> Blackjack!')
-        elif self.dealer_stat == 'bust':
-            print(' '*9 + '--> Bust!')
+        self._check_points(self.dealer)
+        self._show_hold_cards(self.dealer, True)
         print()
         sleep(0.5)
 
-        pstat = self.player_stat
-        ppoint = max(self._player.get_point())
-        dstat = self.dealer_stat
-        dpoint = max(self._dealer.get_point())
+        pstat = self.player.stat
+        ppoint = max(self.player.get_point())
+        dstat = self.dealer.stat
+        dpoint = max(self.dealer.get_point())
         if ppoint == dpoint:
             self._player_draw()
         elif pstat == 'blackjack' and dstat != 'blackjack':
@@ -260,16 +241,16 @@ def main():
     play = Blackjack('You')
     while game_continue:
         play.first_draw()
-        if (play.player_stat != 'blackjack'):
+        if (play.player.stat != 'blackjack'):
             hit = ask_action()
-        if (play.player_stat != 'blackjack'
-           and play.dealer_stat != 'blackjack'):
+        if (play.player.stat != 'blackjack'
+           and play.dealer.stat != 'blackjack'):
             while hit:
                 play.hit()
-                if play.player_stat is not None:
+                if play.player.stat is not None:
                     break
                 hit = ask_action()
-            if play.player_stat != 'bust':
+            if play.player.stat != 'bust':
                 play.dealer_draw()
         sleep(0.5)
         play.show_results()
