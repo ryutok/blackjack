@@ -1,7 +1,9 @@
+language: python
+
 env:
   global:
     - CC_TEST_REPORTER_ID=954308f754c8f5a6a4cb65f8473fdcdd017e5fcdd74612cc42899b541d51087e
-language: python
+
 python:
   - "3.4"
   - "3.5"
@@ -20,4 +22,4 @@ script:
   - pytest
 
 after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
