@@ -15,11 +15,11 @@ Blackjack game on command line.
 
 ## Requirement
 
-    - Python >= 3.4
+- Python >= 3.4
 
 
 ## License
-[MIT](https://github.com/ryutok/zbd/blob/master/LICENSE)
+[MIT](https://github.com/ryutok/blackjack/blob/master/LICENSE)
 
 
 ## Author
