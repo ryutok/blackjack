@@ -19,7 +19,7 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
-  - pytest
+  - pytest --cov-report=xml --cov=blackjack
 
 after_script:
-  - if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
+  - if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi

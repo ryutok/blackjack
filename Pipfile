@@ -9,5 +9,6 @@ name = "pypi"
 pyflakes = "*"
 pycodestyle = "*"
 pytest = "*"
+pytest-cov = "*"
 
 [requires]
