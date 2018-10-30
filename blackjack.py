@@ -14,18 +14,17 @@ class Card:
         self._set_info(id)
 
     def _set_info(self, id):
-        suit, rank = divmod(id, 13)
-
-        if suit % 4 == 0:
+        suit = id // 13 % 4
+        if suit == 0:
             card_name = 'Spade '
-        elif suit % 4 == 1:
+        elif suit == 1:
             card_name = 'Club '
-        elif suit % 4 == 2:
+        elif suit == 2:
             card_name = 'Heart '
-        elif suit % 4 == 3:
+        elif suit == 3:
             card_name = 'Diamond '
 
-        rank += 1
+        rank = id % 13 + 1
         if rank == 1:
             card_name += 'A'
             card_point = [1, 11]
@@ -123,8 +122,7 @@ class Blackjack:
 
     def _show_hold_cards(self, player, card_open):
         if card_open:
-            cards_list = ['[' + '{:^10}'.format(x) + ']'
-                          for x in player.hold_cards]
+            cards_list = ['[{:^10}]'.format(x) for x in player.hold_cards]
             if len(cards_list) <= 4:
                 cards = ' '.join(cards_list)
                 print('{:>7}: {}'.format(player.name, cards))
@@ -137,11 +135,14 @@ class Blackjack:
                     print(' '*9 + '{}'.format(cards))
             points_list = [str(x) for x in player.get_point()]
             points = ' or '.join(points_list)
-            print(' '*9 + '<{} points>'.format(points))
+            print(' '*9 + '<{} points>'.format(points), end='')
             if player.stat == 'blackjack':
-                print(' '*9 + '--> Blackjack!')
+                print('  --> Blackjack!')
             elif player.stat == 'bust':
-                print(' '*9 + '--> Bust!')
+                print('  --> Bust!')
+            else:
+                print()
+            print()
         else:
             cards = '[{:^10}] [{:^10}]'.format(player.hold_cards[0], '')
             print('{:>7}: {}'.format(player.name, cards))
@@ -170,7 +171,6 @@ class Blackjack:
         self._check_points(self.player)
         self._show_hold_cards(self.dealer, False)
         self._show_hold_cards(self.player, True)
-        print()
 
     def dealer_draw(self):
         points = self.dealer.get_point()
@@ -182,12 +182,10 @@ class Blackjack:
         self._draw(self.player, 1)
         self._check_points(self.player)
         self._show_hold_cards(self.player, True)
-        print()
 
     def show_results(self):
         self._check_points(self.dealer)
         self._show_hold_cards(self.dealer, True)
-        print()
         sleep(0.5)
 
         pstat = self.player.stat
@@ -226,13 +224,13 @@ def ask_action():
 
 
 def main():
-    print('-------------------------------------------------------------')
-    print('     ____  _        _    ____ _  __   _   _    ____ _  __')
-    print('    | __ )| |      / \\  / ___| |/ /  | | / \\  / ___| |/ /')
-    print("    |  _ \\| |     / _ \\| |   | ' /_  | |/ _ \\| |   | ' /")
-    print('    | |_) | |___ / ___ \\ |___| . \\ |_| / ___ \\ |___| . \\')
-    print('    |____/|_____/_/   \\_\\____|_|\\_\\___/_/   \\_\\____|_|\\_\\')
-    print('-------------------------------------------------------------')
+    print(r"-------------------------------------------------------------")
+    print(r"     ____  _        _    ____ _  __   _   _    ____ _  __    ")
+    print(r"    | __ )| |      / \  / ___| |/ /  | | / \  / ___| |/ /    ")
+    print(r"    |  _ \| |     / _ \| |   | ' /_  | |/ _ \| |   | ' /     ")
+    print(r"    | |_) | |___ / ___ \ |___| . \ |_| / ___ \ |___| . \     ")
+    print(r"    |____/|_____/_/   \_\____|_|\_\___/_/   \_\____|_|\_\    ")
+    print(r"-------------------------------------------------------------")
     sleep(0.5)
 
     game_continue = True
