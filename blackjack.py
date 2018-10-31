@@ -121,6 +121,9 @@ class Blackjack:
             player.stat = 'blackjack'
 
     def _show_hold_cards(self, player, card_open):
+        if type(card_open) != bool:
+            raise TypeError
+
         if card_open:
             cards_list = ['[{:^10}]'.format(x) for x in player.hold_cards]
             if len(cards_list) <= 4:
