@@ -124,6 +124,7 @@ class Blackjack:
         if type(card_open) != bool:
             raise TypeError
 
+        self._check_points(player)
         if card_open:
             cards_list = ['[{:^10}]'.format(x) for x in player.hold_cards]
             if len(cards_list) <= 4:
@@ -170,8 +171,6 @@ class Blackjack:
         self._draw(self.dealer, 2)
         self._draw(self.player, 2)
 
-        self._check_points(self.dealer)
-        self._check_points(self.player)
         self._show_hold_cards(self.dealer, False)
         self._show_hold_cards(self.player, True)
 
@@ -183,11 +182,9 @@ class Blackjack:
 
     def hit(self):
         self._draw(self.player, 1)
-        self._check_points(self.player)
         self._show_hold_cards(self.player, True)
 
     def show_results(self):
-        self._check_points(self.dealer)
         self._show_hold_cards(self.dealer, True)
         sleep(0.5)
 
